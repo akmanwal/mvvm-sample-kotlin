@@ -15,6 +15,7 @@ import com.manwal.data.base.BaseActivity
 import com.manwal.model.Movie
 import com.manwal.network.RestClient
 import kotlinx.android.synthetic.main.row_items.view.*
+import okhttp3.internal.notify
 
 class MainActivity : BaseActivity<MainViewModel>() {
 
@@ -31,20 +32,20 @@ class MainActivity : BaseActivity<MainViewModel>() {
     }
 
     private fun setData() {
+        myAdapter = MyAdapter()
         recyclerView = findViewById(R.id.recyclerView)
         progressBar = ProgressBar(this)
         layoutManager = LinearLayoutManager(this)
         recyclerView?.layoutManager = layoutManager
-
+        recyclerView?.adapter = myAdapter
         viewModel.loadMoviesNetwork()
     }
 
     private inner class MovieObserver : Observer<List<Movie>?> {
         override fun onChanged(movies: List<Movie>?) {
             if (movies == null) return
-            myAdapter = MyAdapter()
             myAdapter?.setItems(movies)
-            recyclerView?.adapter = myAdapter
+            myAdapter?.notifyDataSetChanged()
         }
     }
 
